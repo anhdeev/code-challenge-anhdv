@@ -1,5 +1,4 @@
 import "reflect-metadata";
-
 import { ReactNode } from "react";
 import { Nunito } from "next/font/google";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,7 +25,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${nunito.variable} bg-background text-foreground`}>
         {/* Global Top Loader */}
         <NextTopLoader
@@ -37,16 +36,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
 
         {/* Global Toast Notifications */}
-        <ToastContainer position="bottom-right" autoClose={5000} theme="dark" />
+        <ToastContainer position="bottom-right" autoClose={5000} />
 
         {/* Theme Provider */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          {/* Sub-layout structure */}
           <div className="flex h-screen flex-col">
             <Header /> {/* Global Header */}
             <main className="flex-1">{children}</main> {/* Dynamic Content */}
