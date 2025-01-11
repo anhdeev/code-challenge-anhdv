@@ -24,6 +24,7 @@ const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
   tokenIcon,
   tokenName,
 }) => {
+  if (!rate) return null;
   return (
     <Accordion type="single" collapsible>
       {/* Accordion Item */}

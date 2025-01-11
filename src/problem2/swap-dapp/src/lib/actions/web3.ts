@@ -42,13 +42,18 @@ export async function disconnectWallet(): Promise<void> {
  * Mock function to simulate fetching wallet balance
  */
 export async function getWalletBalances(
-  address: string,
-  network: string,
-  symbol = "eth"
-): Promise<number> {
-  console.log(`Fetching balance for wallet: ${address}, ${network}, ${symbol}`);
+  network: string
+): Promise<TokenBalance[]> {
+  console.log(`Fetching balance for wallet: ${network}`);
   await delay(700); // Mock delay
-  return Math.random() * 100;
+  return [
+    { token: "eth", amount: 45.678 },
+    { token: "usdt", amount: 12.34 },
+    { token: "sol", amount: 78.9 },
+    { token: "avax", amount: 23.45 },
+    { token: "pol", amount: 56.78 },
+    { token: "bnb", amount: 34.56 },
+  ];
 }
 
 /**
@@ -85,8 +90,11 @@ export async function getExchangeFeeAndRate(
   console.log(
     `Fetching exchange rate from ${network} ${fromToken} to ${toToken}...`
   );
-  await delay(400); // Mock delay
-  return [0.5, 12];
+  await delay(2000); // Mock delay
+  return [
+    parseFloat(Math.random().toFixed(6)) * 50,
+    parseFloat(Math.random().toFixed(6)) * 1000,
+  ];
 }
 
 /**

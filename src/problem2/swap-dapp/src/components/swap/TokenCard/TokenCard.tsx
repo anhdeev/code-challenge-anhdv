@@ -8,6 +8,7 @@ import { useTokens } from "@/hooks/useTokens";
 import { Button } from "@/components/ui/button";
 import { FaSort } from "react-icons/fa";
 import { useNetworks } from "@/hooks/useNetworks";
+import { useWeb3Context } from "@/contexts/Web3Context";
 
 interface TokenCardProps {
   title: string;
@@ -17,6 +18,7 @@ interface TokenCardProps {
   fiatValue?: string; // Fiat equivalent value (e.g., "~$3,302.55")
   tokenIcon?: string; // URL of the token's icon
   readonly?: boolean;
+  rate?: number;
   type?: "source" | "target";
 }
 
@@ -24,14 +26,14 @@ const TokenCard: React.FC<TokenCardProps> = ({
   title,
   tokenSymbol,
   network,
-  amount,
-  fiatValue,
   tokenIcon,
   type,
-  // readonly = false,
+  rate,
+  readonly = false,
 }) => {
   const [open, setOpen] = useState(false); // Boolean state to control dialog visibility
   const { getTokenNameById, getTokenById } = useTokens();
+  const { balances, getFeeAndRate } = useWeb3Context();
 
   const {
     state,
@@ -44,23 +46,39 @@ const TokenCard: React.FC<TokenCardProps> = ({
   } = useSwapContext();
   const { getNetworkById } = useNetworks();
 
+  let amount = state.fromAmount;
   const setAmount = type === "source" ? setFromAmount : setToAmount;
   const setToken = type === "source" ? setFromToken : setToToken;
   const selectedToken = type === "source" ? state.fromToken : state.toToken;
   const setNetwork = type === "source" ? setFromNetwork : setToNetwork;
   const selectedNetwork =
     (type === "source" ? state.fromNetwork : state.toNetwork) || network || "";
-  const symbol = type === "source" ? state.fromToken : state.toToken;
 
-  const tokenObj = getTokenById(symbol || "");
+  const tokenObj = getTokenById(selectedToken || "");
   const networkObj = getNetworkById(selectedNetwork);
-
-  console.log({ state, networkObj });
+  const balance = balances?.find((b) => b.token === selectedToken)?.amount || 0;
+  if (readonly) amount = parseFloat(((rate || 0) * (amount || 0)).toFixed(6));
   return (
     <div className={styles.card}>
-      <p className={styles.details}>
-        {title} <b>{getTokenNameById(symbol) || tokenSymbol}</b>
-      </p>
+      <div className="RowItem w-full">
+        {/* Token Details */}
+        <p className={styles.details}>
+          {title} <b>{getTokenNameById(selectedToken) || tokenSymbol}</b>
+        </p>
+
+        {/* Balance */}
+        {type === "source" && balance > 0 && (
+          <p
+            className="text-ring text-sm cursor-pointer hover:underline"
+            onClick={() => {
+              console.log(`Balance clicked: ${balance}`);
+              // Add your custom onClick logic here
+            }}
+          >
+            Balance: {balance} ({selectedToken?.toUpperCase()})
+          </p>
+        )}
+      </div>
       {!tokenSymbol && !selectedToken ? (
         <div className={styles.content}>
           <Button variant="outline" onClick={() => setOpen(true)}>
@@ -81,10 +99,10 @@ const TokenCard: React.FC<TokenCardProps> = ({
           />
           {/* Right Section */}
           <AmountInput
-            amount={amount}
-            name={selectedToken || ""}
-            fiatValue={fiatValue || "0"}
+            token={tokenObj}
             setAmount={setAmount}
+            readonly={readonly}
+            amount={amount}
           />
         </div>
       )}
@@ -95,6 +113,11 @@ const TokenCard: React.FC<TokenCardProps> = ({
           console.log({ tokenId, networkId });
           setToken(tokenId);
           setNetwork(networkId);
+          getFeeAndRate(
+            state.fromToken || "",
+            state.toToken || "",
+            state.fromNetwork || ""
+          );
         }}
         open={open}
         setOpen={setOpen}

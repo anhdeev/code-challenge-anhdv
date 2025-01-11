@@ -1,4 +1,11 @@
-import { useState, useCallback } from "react";
+"use client";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
 import {
   connectWallet,
   disconnectWallet,
@@ -10,16 +17,15 @@ import {
   getWalletBalances,
 } from "@/lib/actions/web3";
 
-interface UseWeb3Actions {
+interface Web3ActionsContextValue {
   wallet: WalletInfo | null;
   balances: TokenBalance[] | null;
   loading: boolean;
+  fee: number;
+  rate: number;
   connect: () => Promise<void>;
   disconnect: () => void;
-  getBalances: (
-    fromToken: string,
-    toToken: string
-  ) => Promise<number | undefined>;
+  getBalances: (network: string) => Promise<void>;
   getFeeAndRate: (
     fromToken: string,
     toToken: string,
@@ -33,14 +39,17 @@ interface UseWeb3Actions {
   ) => Promise<SwapInfo | null>;
 }
 
-export const useWeb3Actions = (): UseWeb3Actions => {
+const Web3ActionsContext = createContext<Web3ActionsContextValue | undefined>(
+  undefined
+);
+
+export const Web3ActionsProvider = ({ children }: { children: ReactNode }) => {
   const [wallet, setWallet] = useState<WalletInfo | null>(null);
   const [balances, setBalances] = useState<TokenBalance[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [fee, setFee] = useState(0);
+  const [rate, setRate] = useState(0);
 
-  /**
-   * Connects to the wallet and updates the state.
-   */
   const connect = useCallback(async () => {
     setLoading(true);
     try {
@@ -53,18 +62,12 @@ export const useWeb3Actions = (): UseWeb3Actions => {
     }
   }, []);
 
-  /**
-   * Disconnects the wallet and resets the state.
-   */
   const disconnect = useCallback(() => {
     setWallet(null);
     setBalances(null);
-    disconnectWallet(); // Optional if it has backend logic
+    disconnectWallet();
   }, []);
 
-  /**
-   * Performs a token swap.
-   */
   const swap = useCallback(
     async (
       fromToken: string,
@@ -84,7 +87,6 @@ export const useWeb3Actions = (): UseWeb3Actions => {
           network,
           fromAmount
         );
-        console.log("Swap successful:", swapResult);
         return swapResult;
       } catch (error) {
         console.error("Failed to swap tokens:", error);
@@ -99,34 +101,57 @@ export const useWeb3Actions = (): UseWeb3Actions => {
   const getFeeAndRate = useCallback(
     async (fromToken: string, toToken: string, network: string) => {
       try {
-        return getExchangeFeeAndRate(fromToken, toToken, network);
+        setLoading(true);
+        const rst = await getExchangeFeeAndRate(fromToken, toToken, network);
+        setFee(rst[0]);
+        setRate(rst[1]);
+        return rst;
       } catch (error) {
-        console.error("Failed to connect wallet:", error);
+        console.error("Failed to get exchange fee and rate:", error);
         return [0, 0];
+      } finally {
+        setLoading(false);
       }
     },
     []
   );
 
-  const getBalances = useCallback(
-    async (fromToken: string, toToken: string) => {
-      try {
-        return getWalletBalances(fromToken, toToken);
-      } catch (error) {
-        console.error("Failed to connect wallet:", error);
-      }
-    },
-    []
-  );
+  const getBalances = useCallback(async (network: string) => {
+    try {
+      setLoading(true);
+      const balances = await getWalletBalances(network);
+      setBalances(balances);
+    } catch (error) {
+      console.error("Failed to get wallet balances:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  return {
-    wallet,
-    balances,
-    loading,
-    connect,
-    disconnect,
-    swap,
-    getBalances,
-    getFeeAndRate,
-  };
+  return (
+    <Web3ActionsContext.Provider
+      value={{
+        wallet,
+        balances,
+        loading,
+        connect,
+        disconnect,
+        swap,
+        getBalances,
+        getFeeAndRate,
+        fee,
+        rate,
+      }}
+    >
+      {children}
+    </Web3ActionsContext.Provider>
+  );
+};
+
+export const useWeb3Context = (): Web3ActionsContextValue => {
+  const context = useContext(Web3ActionsContext);
+  if (!context) {
+    throw new Error("useWeb3Context must be used within a Web3ActionsProvider");
+  }
+  return context;
 };

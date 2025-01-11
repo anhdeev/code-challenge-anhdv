@@ -1,28 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useEffect } from "react";
 import { Field } from "formik";
 import styles from "./TokenCard.module.css";
+import { useTokenPrice } from "@/hooks/useTokenPrice";
+import { Token } from "@/hooks/useTokens";
+import { useWeb3Context } from "@/contexts/Web3Context";
+import { useSwapContext } from "@/contexts/SwapContext";
 
 interface AmountInputProps {
-  name: string; // Name of the Field in Formik
-  fiatValue: string; // Fiat equivalent value (e.g., "~$1,234.56")
-  amount?: string;
+  token: Token | undefined | null; // Name of the Field in Formik
   setAmount: (value: number) => void;
+  readonly?: boolean;
+  amount?: number | null;
 }
 
 const AmountInput: React.FC<AmountInputProps> = ({
-  name,
-  fiatValue,
-  amount,
+  token,
   setAmount,
+  readonly,
+  amount,
 }) => {
+  const { loading, fetchPrices, getUsdEstimate } = useTokenPrice();
+  const { getFeeAndRate } = useWeb3Context();
+  const { state } = useSwapContext();
+  useEffect(() => {
+    if (token) fetchPrices([token.name.toLowerCase()]);
+  }, [fetchPrices, token, token?.name]);
+
+  const fiatValue = token
+    ? getUsdEstimate(token.name.toLowerCase(), amount || 0)
+    : 0;
+
   return (
     <div className="flex flex-col items-end mt-2">
       {/* Amount Input */}
-      {amount || !name ? (
+      {readonly || !token ? (
         <p className={styles.amount}>{amount}</p>
       ) : (
-        <Field name={name}>
+        <Field name={token.id}>
           {({ field, form }: any) => (
             <input
               {...field}
@@ -39,9 +54,13 @@ const AmountInput: React.FC<AmountInputProps> = ({
                   maximumFractionDigits: 8,
                 });
                 // Update Formik state with formatted value
-                form.setFieldValue(name, formattedValue);
-                setAmount(Number(formattedValue));
-                console.log({ field, formattedValue, name });
+                form.setFieldValue(token.id, formattedValue);
+                setAmount(Number(formattedValue.replace(/,/g, "")));
+                getFeeAndRate(
+                  state.fromToken || "",
+                  state.toToken || "",
+                  state.fromNetwork || ""
+                );
               }}
             />
           )}
@@ -49,7 +68,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       )}
 
       {/* Fiat Value Display */}
-      <p className="text-gray-400">{fiatValue}</p>
+      {!loading && <p className="text-gray-400">{fiatValue}</p>}
     </div>
   );
 };

@@ -28,12 +28,12 @@ const SwapContext = createContext<SwapContextType | undefined>(undefined);
 export const SwapProvider = ({ children }: { children: ReactNode }) => {
   // Initial state
   const [state, setState] = useState<SwapState>({
-    fromToken: null,
+    fromToken: "eth",
+    fromNetwork: "ethereum",
     toToken: null,
     fromAmount: null,
     toAmount: null,
     slippage: 0.5, // Default slippage tolerance
-    fromNetwork: null,
     toNetwork: null,
   });
 
