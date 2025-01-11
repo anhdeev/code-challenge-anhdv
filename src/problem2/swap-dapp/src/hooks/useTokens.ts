@@ -15,7 +15,7 @@ export const useTokens = () => {
   };
 
   const getTokenNameById = (id: string | null): string => {
-    return tokens.find((token) => token.id === id)?.name || "Unknown Token";
+    return tokens.find((token) => token.id === id)?.name || "";
   };
 
   return {

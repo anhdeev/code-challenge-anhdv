@@ -15,7 +15,7 @@
 }
 
 .details {
-@apply text-sm text-gray-400;
+@apply text-sm text-gray-400 pb-1;
 }
 
 .title {

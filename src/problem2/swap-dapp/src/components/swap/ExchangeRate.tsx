@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/accordion";
 
 interface ExchangeFeeAndRateProps {
-  rate: string; // Example: "1 ETH = ~$3,367.2"
+  rate: number; // Example: "1 ETH = ~$3,367.2"
   slippageTolerance: string; // Example: "0.5%"
-  minimumReceive: string; // Example: "207.247228 Ξ"
-  networkCost: string; // Example: "Free"
-  swapFee: string; // Example: "Free"
+  networkCost: number; // Example: "Free"
+  swapFee: number; // Example: "Free"
   tokenIcon: string; // Icon for the token (e.g., Ethereum)
   tokenName: string; // Name of the token (e.g., "ETH")
 }
@@ -20,7 +19,6 @@ interface ExchangeFeeAndRateProps {
 const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
   rate,
   slippageTolerance,
-  minimumReceive,
   networkCost,
   swapFee,
   tokenIcon,
@@ -53,7 +51,7 @@ const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
             {/* Minimum Receive */}
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Minimum receive</span>
-              <span className="font-medium">{minimumReceive}</span>
+              <span className="font-medium">{"0"}</span>
             </div>
 
             {/* Network Fee */}

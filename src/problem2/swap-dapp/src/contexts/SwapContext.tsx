@@ -48,10 +48,10 @@ export const SwapProvider = ({ children }: { children: ReactNode }) => {
     setState((prev) => ({ ...prev, toAmount: amount }));
   const setSlippage = (slippage: number) =>
     setState((prev) => ({ ...prev, slippage }));
-  const setFromNetwork = (network: string) =>
-    setState((prev) => ({ ...prev, network }));
-  const setToNetwork = (network: string) =>
-    setState((prev) => ({ ...prev, network }));
+  const setFromNetwork = (fromNetwork: string) =>
+    setState((prev) => ({ ...prev, fromNetwork }));
+  const setToNetwork = (toNetwork: string) =>
+    setState((prev) => ({ ...prev, toNetwork }));
 
   return (
     <SwapContext.Provider

@@ -29,7 +29,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
               type="text"
               placeholder="Enter amount"
               className="w-full p-2 text-lg font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-right"
-              maxlength={32}
+              maxLength={32}
               onBlur={(e) => {
                 field.onBlur(e); // Trigger Formik's blur handler
                 // Format value on blur

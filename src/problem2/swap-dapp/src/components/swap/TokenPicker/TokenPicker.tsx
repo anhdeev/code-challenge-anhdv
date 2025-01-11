@@ -10,6 +10,7 @@ import { useTokens } from "@/hooks/useTokens";
 import React, { useState } from "react";
 import Image from "next/image";
 import SearchWithNetwork from "@/components/swap/TokenPicker/SearchBar";
+import { NetworkIDs } from "@/constants";
 
 interface TokenPickerProps {
   onSelect: (tokenId: string, networkId: string) => void; // Callback when a token is selected
@@ -22,7 +23,7 @@ const TokenPicker: React.FC<TokenPickerProps> = ({
   open,
   setOpen,
 }) => {
-  const [network, setNetwork] = useState("ethereum");
+  const [network, setNetwork] = useState(NetworkIDs.Ethereum);
   const { getAllTokens } = useTokens();
   const [searchTerm, setSearchTerm] = useState("");
 

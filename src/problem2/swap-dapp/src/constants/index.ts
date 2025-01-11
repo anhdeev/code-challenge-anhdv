@@ -23,3 +23,11 @@ export const footerLinks = [
     path: "/privacy",
   },
 ];
+
+export const NetworkIDs = {
+  Ethereum: "ethereum",
+  Binance: "binance",
+  Polygon: "polygon",
+  Solana: "solana",
+  Avalanche: "avax",
+};

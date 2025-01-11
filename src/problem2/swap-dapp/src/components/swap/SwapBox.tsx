@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -16,10 +16,12 @@ import { useSwapContext } from "@/contexts/SwapContext";
 import ActionButton, { ActionStage } from "@/components/swap/ActionButton";
 import ExchangeFeeAndRate from "@/components/swap/ExchangeRate";
 import { Form, Formik } from "formik";
+import { NetworkIDs } from "@/constants";
+import { useWeb3Actions } from "@/hooks/useWeb3Actions";
 
 const SwapForm = ({ children }: { children: ReactNode }) => {
   const initialValues = {
-    fromToken: "ETH",
+    fromToken: "eth",
     fromNetwork: "ethereum",
     toToken: "",
     toNetwork: "",
@@ -33,7 +35,7 @@ const SwapForm = ({ children }: { children: ReactNode }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {() => <Form className="p-4 space-y-4">{children}</Form>}
+      {() => <Form className="p-2">{children}</Form>}
     </Formik>
   );
 };
@@ -42,6 +44,9 @@ export default function SwapPage() {
   const [rotated, setRotated] = useState(false);
   const [stage, setStage] = useState(ActionStage.CONNECT);
   const { state } = useSwapContext();
+  const { getFeeAndRate } = useWeb3Actions();
+  const [fee, setFee] = useState(0);
+  const [rate, setRate] = useState(0);
 
   const handleSwapClick = () => {
     setRotated((prev) => !prev);
@@ -52,6 +57,29 @@ export default function SwapPage() {
       setStage(ActionStage.CONFIRM);
     }
   }, [state.fromAmount, state.fromToken, state.toToken, stage, readyToSwap]);
+
+  useEffect(() => {
+    const retrieveFeeAndRate = async (
+      fromToken: string,
+      toToken: string,
+      fromNetwork: string
+    ) => {
+      const [fee, rate] = await getFeeAndRate(fromToken, toToken, fromNetwork);
+      setFee(fee);
+      setRate(rate);
+    };
+    if (state.fromToken && state.toToken && state.fromNetwork)
+      retrieveFeeAndRate(state.fromToken, state.toToken, state.fromNetwork);
+  }, [
+    readyToSwap,
+    state.fromToken,
+    state.toToken,
+    state.fromAmount,
+    getFeeAndRate,
+    state.fromNetwork,
+    setFee,
+    setRate,
+  ]);
 
   return (
     <Tabs defaultValue="swap" className="max-w-md md:max-w-lg mx-auto">
@@ -80,9 +108,8 @@ export default function SwapPage() {
             <SwapForm>
               <TokenCard
                 title="You pay"
-                tokenName="ETH"
-                tokenSymbol="Ether"
-                network="Ethereum"
+                tokenSymbol="Ethererum"
+                network={NetworkIDs.Ethereum}
                 fiatValue="~$3,302.55"
                 tokenIcon="https://cryptologos.cc/logos/ethereum-eth-logo.png"
                 type="source"
@@ -103,11 +130,10 @@ export default function SwapPage() {
               {/* Token 2 */}
               <TokenCard title="You receive" type="target" readonly />
               <ExchangeFeeAndRate
-                rate="1 ETH = ~$3,367.2"
-                slippageTolerance="0.5%"
-                minimumReceive="207.247228"
-                networkCost="Free"
-                swapFee="$3.5"
+                rate={rate}
+                slippageTolerance="0.5%" // TODO: add slippage tolerance to config
+                networkCost={0}
+                swapFee={fee}
                 tokenIcon="https://cryptologos.cc/logos/ethereum-eth-logo.png"
                 tokenName="ETH"
               />

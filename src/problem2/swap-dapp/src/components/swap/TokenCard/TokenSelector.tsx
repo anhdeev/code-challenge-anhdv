@@ -5,6 +5,7 @@ import styles from "./TokenCard.module.css";
 interface TokenSelectorProps {
   tokenName: string;
   network: string; // Network name (e.g., "on Ethereum")
+  networkIcon: string; // Network name (e.g., "on Ethereum")
   tokenIcon: string; // URL of the token's icon
   onSelect?: () => void;
 }
@@ -13,6 +14,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
   tokenName,
   network,
   tokenIcon,
+  networkIcon,
   onSelect,
 }) => {
   return (
@@ -34,7 +36,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
         <div className="RowItem whitespace-nowrap">
           <p className={styles.subtitle}>{"on " + network}</p>
           <Image
-            src={tokenIcon}
+            src={networkIcon}
             alt={"network"}
             width={16}
             height={16}
