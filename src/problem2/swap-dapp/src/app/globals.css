@@ -71,3 +71,7 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.RowItem {
+  @apply flex items-center justify-between gap-1;
+}
