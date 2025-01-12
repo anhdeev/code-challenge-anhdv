@@ -122,7 +122,7 @@ export const ApproveAndSwap: React.FC<ApproveAndSwapProps> = ({
               <div className="flex items-center gap-1">
                 {/* TODO: update icon depends on the selected network */}
                 <Image
-                  src="/assets/tokens/eth.svg"
+                  src="/assets/tokens/ETH.svg"
                   alt="ETH"
                   width={16}
                   height={16}
