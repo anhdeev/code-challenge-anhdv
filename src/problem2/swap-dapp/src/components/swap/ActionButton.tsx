@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import {
   FaWallet,
   FaCheck,
@@ -37,7 +37,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   const { getTokenById } = useTokens();
 
   return (
-    <Fragment>
+    <div className="mt-4">
       <button
         onClick={() => {
           if (stage === ActionStage.CONFIRM) {
@@ -54,6 +54,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
           stage === ActionStage.LOADING
             ? "cursor-wait bg-gray-100 text-gray-500"
             : "cursor-pointer"
+        }  ${
+          stage === ActionStage.CONFIRM ? "cursor-pointer bg-secondary" : ""
         }`}
       >
         {stage === ActionStage.CONNECT && <FaWallet size={20} />}
@@ -88,7 +90,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
         open={open}
         setOpen={setOpen}
       />
-    </Fragment>
+    </div>
   );
 };
 

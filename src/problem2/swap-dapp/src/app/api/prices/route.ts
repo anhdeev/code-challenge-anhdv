@@ -11,27 +11,26 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Mock token prices
   const mockPrices = {
-    bitcoin: { usd: 94624.68 }, // BTC
-    ethereum: { usd: 3685.37 }, // ETH
-    tether: { usd: 1.0 }, // USDT
-    solana: { usd: 219.08 }, // SOL
-    binance: { usd: 730.74 }, // BNB
-    cardano: { usd: 1.11 }, // ADA
-    ripple: { usd: 2.43 }, // XRP
-    polkadot: { usd: 6.74 }, // DOT
-    litecoin: { usd: 103.9 }, // LTC
-    chainlink: { usd: 13.85 }, // LINK
-    stellar: { usd: 0.092 }, // XLM
-    dogecoin: { usd: 0.3897 }, // DOGE
-    avalanche: { usd: 30.0 }, // AVAX
-    polygon: { usd: 0.46 }, // POL (formerly MATIC)
-    tron: { usd: 0.1231 }, // TRX
-    vechain: { usd: 0.05 }, // VET
+    btc: { usd: 94624.68 }, // Bitcoin
+    eth: { usd: 3685.37 }, // Ethereum
+    usdt: { usd: 1.0 }, // Tether
+    sol: { usd: 219.08 }, // Solana
+    bnb: { usd: 730.74 }, // Binance Coin
+    ada: { usd: 1.11 }, // Cardano
+    xrp: { usd: 2.43 }, // Ripple
+    dot: { usd: 6.74 }, // Polkadot
+    ltc: { usd: 103.9 }, // Litecoin
+    link: { usd: 13.85 }, // Chainlink
+    xlm: { usd: 0.092 }, // Stellar
+    doge: { usd: 0.3897 }, // Dogecoin
+    avax: { usd: 30.0 }, // Avalanche
+    pol: { usd: 0.46 }, // Polygon (formerly MATIC)
+    trx: { usd: 0.1231 }, // Tron
+    vet: { usd: 0.05 }, // VeChain
     eos: { usd: 0.8 }, // EOS
-    tezos: { usd: 1.29 }, // XTZ
-    monero: { usd: 199.15 }, // XMR
+    xtz: { usd: 1.29 }, // Tezos
+    xmr: { usd: 199.15 }, // Monero
     iota: { usd: 0.32 }, // IOTA
   };
 
@@ -45,6 +44,5 @@ export async function GET(req: NextRequest) {
     return acc;
   }, {} as { [key: string]: { usd: number } });
 
-  console.log({ result });
   return NextResponse.json(result);
 }

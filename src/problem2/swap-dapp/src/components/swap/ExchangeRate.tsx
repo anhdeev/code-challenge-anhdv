@@ -6,14 +6,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { formatMoney } from "@/lib/utils";
+import { useSwapContext } from "@/contexts/SwapContext";
+import { useTokens } from "@/hooks/useTokens";
 
 interface ExchangeFeeAndRateProps {
-  rate: number; // Example: "1 ETH = ~$3,367.2"
-  slippageTolerance: string; // Example: "0.5%"
-  networkCost: number; // Example: "Free"
-  swapFee: number; // Example: "Free"
-  tokenIcon: string; // Icon for the token (e.g., Ethereum)
-  tokenName: string; // Name of the token (e.g., "ETH")
+  rate: number;
+  slippageTolerance: string;
+  networkCost: number;
+  swapFee: number;
 }
 
 const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
@@ -21,10 +22,12 @@ const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
   slippageTolerance,
   networkCost,
   swapFee,
-  tokenIcon,
-  tokenName,
 }) => {
-  if (!rate) return null;
+  const { state } = useSwapContext();
+  const { getTokenById } = useTokens();
+  const fromToken = getTokenById(state.fromToken || "");
+  const toToken = getTokenById(state.toToken || "");
+  if (!rate || !fromToken || !toToken) return null;
   return (
     <Accordion type="single" collapsible>
       {/* Accordion Item */}
@@ -33,10 +36,17 @@ const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
         <AccordionTrigger>
           <div className="flex items-center justify-between gap-2 w-full px-2">
             <div className="RowItem ">
-              <Image src={tokenIcon} alt={tokenName} width={24} height={24} />
-              <p className="text-sm">{rate}</p>
+              <Image
+                src={fromToken?.icon || ""}
+                alt={fromToken?.name || ""}
+                width={24}
+                height={24}
+              />
+              <p className="text-sm">{`1 ${fromToken?.id.toUpperCase()} = ~${formatMoney(
+                rate
+              )} ${toToken?.id.toUpperCase()}`}</p>
             </div>
-            <p className="font-semibold text-sm">{networkCost}</p>
+            <p className="text-sm">{`$${swapFee}`}</p>
           </div>
         </AccordionTrigger>
 
@@ -52,19 +62,22 @@ const ExchangeFeeAndRate: React.FC<ExchangeFeeAndRateProps> = ({
             {/* Minimum Receive */}
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Minimum receive</span>
-              <span className="font-medium">{"0"}</span>
+              <span className="font-medium">
+                {formatMoney((state.toAmount || 0) * 0.95) +
+                  ` (${state.toToken?.toUpperCase()})`}
+              </span>
             </div>
 
             {/* Network Fee */}
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Network Cost</span>
-              <span className="font-medium">{networkCost}</span>
+              <span className="font-medium">{networkCost || "Free"}</span>
             </div>
 
             {/* Swap Fee */}
             <div className="flex items-center justify-between">
-              <span className="text-gray-400">Swap Fee</span>
-              <span className="font-medium">{swapFee}</span>
+              <span className="text-gray-400">{`Swap Fee`}</span>
+              <span className="font-medium">{`$${swapFee}`}</span>
             </div>
           </div>
         </AccordionContent>

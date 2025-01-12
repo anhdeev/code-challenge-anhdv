@@ -1,8 +1,10 @@
+"use client";
 import Link from "next/link";
 import NavItems from "./NavItems";
 import MobileNav from "./MobileNav";
 import ModeToggle from "./ModeToggle";
 import Image from "next/image";
+import WalletConnect from "@/components/wallet/WalletConnect";
 
 const Header = () => {
   return (
@@ -14,6 +16,7 @@ const Header = () => {
         <nav className="hidden md:flex w-full max-w-xs">
           <NavItems />
         </nav>
+        <WalletConnect />
         <div className="flex justify-end gap-3 items-center">
           <ModeToggle />
           <MobileNav />

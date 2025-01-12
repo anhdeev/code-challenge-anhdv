@@ -8,6 +8,8 @@ import { ToastContainer } from "react-toastify";
 import NextTopLoader from "nextjs-toploader";
 import Header from "@/components/shared/Header";
 import Footer from "@/components/shared/Footer";
+import { Web3ActionsProvider } from "@/contexts/Web3Context";
+import { SwapProvider } from "@/contexts/SwapContext";
 
 const nunito = Nunito({
   weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
@@ -46,9 +48,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           disableTransitionOnChange
         >
           <div className="flex h-screen flex-col">
-            <Header /> {/* Global Header */}
-            <main className="flex-1">{children}</main> {/* Dynamic Content */}
-            <Footer /> {/* Global Footer */}
+            <Web3ActionsProvider>
+              <SwapProvider>
+                <Header /> {/* Global Header */}
+                <main className="flex-1">{children}</main>{" "}
+                {/* Dynamic Content */}
+                <Footer /> {/* Global Footer */}
+              </SwapProvider>
+            </Web3ActionsProvider>
           </div>
         </ThemeProvider>
       </body>

@@ -14,7 +14,7 @@ interface TokenCardProps {
   title: string;
   tokenSymbol?: string;
   network?: string; // Network name (e.g., "on Ethereum")
-  amount?: string; // Amount of token
+  amount?: number; // Amount of token
   fiatValue?: string; // Fiat equivalent value (e.g., "~$3,302.55")
   tokenIcon?: string; // URL of the token's icon
   readonly?: boolean;
@@ -33,7 +33,7 @@ const TokenCard: React.FC<TokenCardProps> = ({
 }) => {
   const [open, setOpen] = useState(false); // Boolean state to control dialog visibility
   const { getTokenNameById, getTokenById } = useTokens();
-  const { balances, getFeeAndRate } = useWeb3Context();
+  const { balanceLoading, balances, getFeeAndRate } = useWeb3Context();
 
   const {
     state,
@@ -47,6 +47,7 @@ const TokenCard: React.FC<TokenCardProps> = ({
   const { getNetworkById } = useNetworks();
 
   let amount = state.fromAmount;
+  if (readonly) amount = parseFloat(((rate || 0) * (amount || 0)).toFixed(6));
   const setAmount = type === "source" ? setFromAmount : setToAmount;
   const setToken = type === "source" ? setFromToken : setToToken;
   const selectedToken = type === "source" ? state.fromToken : state.toToken;
@@ -57,7 +58,7 @@ const TokenCard: React.FC<TokenCardProps> = ({
   const tokenObj = getTokenById(selectedToken || "");
   const networkObj = getNetworkById(selectedNetwork);
   const balance = balances?.find((b) => b.token === selectedToken)?.amount || 0;
-  if (readonly) amount = parseFloat(((rate || 0) * (amount || 0)).toFixed(6));
+
   return (
     <div className={styles.card}>
       <div className="RowItem w-full">
@@ -67,17 +68,21 @@ const TokenCard: React.FC<TokenCardProps> = ({
         </p>
 
         {/* Balance */}
-        {type === "source" && balance > 0 && (
-          <p
-            className="text-ring text-sm cursor-pointer hover:underline"
-            onClick={() => {
-              console.log(`Balance clicked: ${balance}`);
-              // Add your custom onClick logic here
-            }}
-          >
-            Balance: {balance} ({selectedToken?.toUpperCase()})
-          </p>
-        )}
+        {type === "source" &&
+          balance > 0 &&
+          (balanceLoading ? (
+            // Skeleton loader for balance
+            <div className="w-32 h-4 bg-gray-300 animate-pulse rounded-md" />
+          ) : (
+            <p
+              className="text-ring text-sm cursor-pointer hover:underline"
+              onClick={() => {
+                console.log(`Balance clicked: ${balance}`);
+              }}
+            >
+              Balance: {balance} ({selectedToken?.toUpperCase()})
+            </p>
+          ))}
       </div>
       {!tokenSymbol && !selectedToken ? (
         <div className={styles.content}>
@@ -110,7 +115,6 @@ const TokenCard: React.FC<TokenCardProps> = ({
       {/* Token Picker */}
       <TokenPicker
         onSelect={(tokenId: string, networkId: string) => {
-          console.log({ tokenId, networkId });
           setToken(tokenId);
           setNetwork(networkId);
           getFeeAndRate(

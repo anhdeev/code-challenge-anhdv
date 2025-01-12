@@ -16,7 +16,6 @@ import { useSwapContext } from "@/contexts/SwapContext";
 import ActionButton, { ActionStage } from "@/components/swap/ActionButton";
 import ExchangeFeeAndRate from "@/components/swap/ExchangeRate";
 import { Form, Formik } from "formik";
-import { NetworkIDs } from "@/constants";
 import { useWeb3Context } from "@/contexts/Web3Context";
 import { FiRefreshCw } from "react-icons/fi";
 
@@ -37,19 +36,27 @@ const SwapForm = ({ children }: { children: ReactNode }) => {
 
 export default function SwapPage() {
   const [rotated, setRotated] = useState(false);
-  const [stage, setStage] = useState(ActionStage.CONNECT);
-  const { state } = useSwapContext();
-  const { fee, rate, getFeeAndRate, getBalances } = useWeb3Context();
+  const { state, swap, stage, setStage, setFromNetwork } = useSwapContext();
+  const { fee, rate, getFeeAndRate, getBalances, loading, connect } =
+    useWeb3Context();
 
   const handleSwapClick = () => {
     setRotated((prev) => !prev);
+    swap();
   };
   const readyToSwap = !!(state.fromToken && state.toToken && state.fromAmount);
   useEffect(() => {
     if (readyToSwap && stage === ActionStage.SELECT) {
       setStage(ActionStage.CONFIRM);
     }
-  }, [state.fromAmount, state.fromToken, state.toToken, stage, readyToSwap]);
+  }, [
+    state.fromAmount,
+    state.fromToken,
+    state.toToken,
+    stage,
+    readyToSwap,
+    setStage,
+  ]);
 
   useEffect(() => {
     const retrieveFeeAndRate = async (
@@ -93,7 +100,15 @@ export default function SwapPage() {
               </CardDescription>
             </div>
             <button
-              onClick={() => alert("refetch data")}
+              onClick={() => {
+                getFeeAndRate(
+                  state.fromToken || "",
+                  state.toToken || "",
+                  state.fromNetwork || ""
+                );
+                if (stage !== ActionStage.CONNECT)
+                  getBalances(state.fromNetwork || "");
+              }}
               className="text-gray-500 hover:text-gray-800 transition-colors"
               aria-label="Refresh"
             >
@@ -106,15 +121,15 @@ export default function SwapPage() {
             <SwapForm>
               <TokenCard
                 title="You pay"
-                tokenSymbol="Ethererum"
-                network={NetworkIDs.Ethereum}
-                tokenIcon="https://cryptologos.cc/logos/ethereum-eth-logo.png"
+                tokenSymbol={state.fromToken || ""}
+                network={state.fromNetwork || ""}
                 type="source"
+                amount={state.fromAmount || 0}
               />
 
               {/* Swap Icon */}
               <div
-                className="absolute left-1/2 transform -translate-x-1/2 -translate-y-2/3 800 p-3 rounded-full cursor-pointer bg-secondary"
+                className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 800 p-3 rounded-full cursor-pointer bg-secondary"
                 onClick={handleSwapClick}
               >
                 <FaExchangeAlt
@@ -131,14 +146,16 @@ export default function SwapPage() {
                 rate={rate}
                 readonly
               />
-              <ExchangeFeeAndRate
-                rate={rate}
-                slippageTolerance="0.5%" // TODO: add slippage tolerance to config
-                networkCost={0}
-                swapFee={fee}
-                tokenIcon="https://cryptologos.cc/logos/ethereum-eth-logo.png"
-                tokenName="ETH"
-              />
+              {loading ? (
+                <div className="w-full h-8 bg-gray-300 animate-pulse rounded-md my-4" />
+              ) : (
+                <ExchangeFeeAndRate
+                  rate={rate}
+                  slippageTolerance="0.5%" // TODO: add slippage tolerance to config
+                  networkCost={0}
+                  swapFee={fee}
+                />
+              )}
               <ActionButton
                 onClick={() => {
                   if (stage === ActionStage.CONNECT) {
@@ -153,7 +170,9 @@ export default function SwapPage() {
                       setStage(
                         readyToSwap ? ActionStage.CONFIRM : ActionStage.SELECT
                       );
+                      connect();
                       getBalances(state.fromNetwork || "");
+                      setFromNetwork(state.fromNetwork || "");
                     }, 0);
                   }
                 }}

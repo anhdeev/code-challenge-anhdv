@@ -57,8 +57,6 @@ const TokenPicker: React.FC<TokenPickerProps> = ({
               key={token.id}
               className="flex items-center justify-between p-2 hover:bg-secondary cursor-pointer rounded-lg"
               onClick={() => {
-                console.log("token.id", token.id);
-                console.log("network", network);
                 onSelect(token.id, network);
                 setOpen(false);
               }}

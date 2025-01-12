@@ -20,7 +20,9 @@ import {
 interface Web3ActionsContextValue {
   wallet: WalletInfo | null;
   balances: TokenBalance[] | null;
+  setWallet: React.Dispatch<React.SetStateAction<WalletInfo | null>>;
   loading: boolean;
+  balanceLoading: boolean;
   fee: number;
   rate: number;
   connect: () => Promise<void>;
@@ -37,6 +39,7 @@ interface Web3ActionsContextValue {
     network: string,
     fromAmount: string
   ) => Promise<SwapInfo | null>;
+  setRate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Web3ActionsContext = createContext<Web3ActionsContextValue | undefined>(
@@ -47,6 +50,8 @@ export const Web3ActionsProvider = ({ children }: { children: ReactNode }) => {
   const [wallet, setWallet] = useState<WalletInfo | null>(null);
   const [balances, setBalances] = useState<TokenBalance[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+
   const [fee, setFee] = useState(0);
   const [rate, setRate] = useState(0);
 
@@ -118,13 +123,13 @@ export const Web3ActionsProvider = ({ children }: { children: ReactNode }) => {
 
   const getBalances = useCallback(async (network: string) => {
     try {
-      setLoading(true);
+      setBalanceLoading(true);
       const balances = await getWalletBalances(network);
       setBalances(balances);
     } catch (error) {
       console.error("Failed to get wallet balances:", error);
     } finally {
-      setLoading(false);
+      setBalanceLoading(false);
     }
   }, []);
 
@@ -132,8 +137,10 @@ export const Web3ActionsProvider = ({ children }: { children: ReactNode }) => {
     <Web3ActionsContext.Provider
       value={{
         wallet,
+        setWallet,
         balances,
         loading,
+        balanceLoading,
         connect,
         disconnect,
         swap,
@@ -141,6 +148,7 @@ export const Web3ActionsProvider = ({ children }: { children: ReactNode }) => {
         getFeeAndRate,
         fee,
         rate,
+        setRate,
       }}
     >
       {children}

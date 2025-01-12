@@ -82,6 +82,8 @@ export async function swapTokens(
 /**
  * Mock function to simulate fetching the current exchange rate
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const cached: any = {};
 export async function getExchangeFeeAndRate(
   fromToken: string,
   toToken: string,
@@ -90,11 +92,20 @@ export async function getExchangeFeeAndRate(
   console.log(
     `Fetching exchange rate from ${network} ${fromToken} to ${toToken}...`
   );
-  await delay(2000); // Mock delay
-  return [
+  await delay(1000); // Mock delay
+  if (cached[`${fromToken}${toToken}${network}`]) {
+    return cached[`${fromToken}${toToken}${network}`].map(
+      (v: number) => v * (1 + (Math.random() - 0.5) * 0.05)
+    );
+  } else if (cached[`${toToken}${fromToken}${network}`]) {
+    const rst = cached[`${toToken}${fromToken}${network}`];
+    return [rst[0], 1 / rst[1]];
+  }
+  cached[`${toToken}${fromToken}${network}`] = [
     parseFloat(Math.random().toFixed(6)) * 50,
     parseFloat(Math.random().toFixed(6)) * 1000,
   ];
+  return cached[`${toToken}${fromToken}${network}`];
 }
 
 /**

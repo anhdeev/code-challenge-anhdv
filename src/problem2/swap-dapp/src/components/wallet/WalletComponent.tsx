@@ -1,76 +1,81 @@
-import React from "react";
-import Image from "next/image";
-import { networks } from "@/data/networks"; // Network data
-import { tokens } from "@/data/tokens"; // Token data
+"use client";
+import React, { useEffect } from "react";
+import { useWeb3Context } from "@/contexts/Web3Context";
+import { useTokenPrice } from "@/hooks/useTokenPrice";
 
-const WalletPage = () => {
+const BalancePage: React.FC = () => {
+  const { wallet, balances } = useWeb3Context();
+  const {
+    fetchPrices,
+    getUsdEstimate,
+    loading: priceLoading,
+  } = useTokenPrice();
+
+  // Fetch token prices when balances are available
+  useEffect(() => {
+    if (balances && balances.length > 0) {
+      const symbols = balances.map((balance) => balance.token.toLowerCase());
+      fetchPrices(symbols);
+    }
+  }, [balances, fetchPrices]);
+
+  if (!wallet) {
+    return (
+      <p className="w-4/12 mx-auto">
+        Please connect your wallet to view balances.
+      </p>
+    );
+  }
+
   return (
-    <div className=" bg-gray-900 text-white p-4">
-      {/* Wallet Balance Overview */}
-      <div className="bg-gray-800 rounded-lg p-4 shadow-md mb-6">
-        <h1 className="text-2xl font-semibold">Wallet</h1>
-        <p className="text-gray-400">Total Balance</p>
-        <h2 className="text-3xl font-bold">$12,345.67</h2>
-      </div>
+    <div className="p-4 w-7/12 mx-auto">
+      <h1 className="text-2xl font-semibold mb-4">Your Balances</h1>
+      {priceLoading ? (
+        <p>Loading token prices...</p>
+      ) : balances && balances.length > 0 ? (
+        <div className="space-y-4">
+          {balances.map((balance) => {
+            const usdValue = getUsdEstimate(
+              balance.token.toLowerCase(),
+              balance.amount
+            );
+            return (
+              <div
+                key={balance.token}
+                className="flex justify-between items-center p-4 rounded-lg shadow-md"
+              >
+                {/* Token Details */}
+                <div className="flex items-center gap-4">
+                  {/* <img
+                    src={balance.icon}
+                    alt={balance.symbol}
+                    className="w-10 h-10 rounded-full"
+                  /> */}
+                  <div>
+                    <p className="text-lg font-medium">{balance.token}</p>
+                    <p className="text-gray-400 text-sm">
+                      {balance.amount} {balance.token}
+                    </p>
+                  </div>
+                </div>
 
-      {/* Network Selector */}
-      <div className="mb-6">
-        <label className="block text-gray-400 mb-2">Select Network</label>
-        <select className="w-full bg-gray-800 text-gray-300 p-3 rounded-lg">
-          {networks.map((network) => (
-            <option key={network.id} value={network.id}>
-              {network.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Token List */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold mb-4">Your Assets</h3>
-        {tokens.map((token) => (
-          <div
-            key={token.id}
-            className="flex items-center justify-between bg-gray-800 rounded-lg p-4 shadow-md"
-          >
-            {/* Token Info */}
-            <div className="flex items-center gap-4">
-              <Image
-                src={token.icon}
-                alt={token.name}
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div>
-                <h4 className="font-medium">{token.name}</h4>
-                <p className="text-gray-400">{token.symbol}</p>
+                {/* USD Value */}
+                <div className="text-right">
+                  {usdValue !== null ? (
+                    <p className="text-gray-300">${usdValue.toFixed(2)}</p>
+                  ) : (
+                    <p className="text-gray-500">Price unavailable</p>
+                  )}
+                </div>
               </div>
-            </div>
-
-            {/* Token Balance */}
-            <div className="text-right">
-              <p className="font-bold">12.34 {token.symbol}</p>
-              <p className="text-gray-400">~$1,234.56</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-around mt-6">
-        <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-lg font-medium">
-          Send
-        </button>
-        <button className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg text-lg font-medium">
-          Receive
-        </button>
-        <button className="bg-yellow-600 hover:bg-yellow-700 px-6 py-3 rounded-lg text-lg font-medium">
-          Buy
-        </button>
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p>No token balances available.</p>
+      )}
     </div>
   );
 };
 
-export default WalletPage;
+export default BalancePage;

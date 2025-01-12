@@ -1,5 +1,6 @@
 "use client";
 
+import { ActionStage } from "@/components/swap/ActionButton";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface SwapState {
@@ -21,6 +22,9 @@ interface SwapContextType {
   setSlippage: (slippage: number) => void;
   setFromNetwork: (network: string) => void;
   setToNetwork: (network: string) => void;
+  swap: () => void;
+  stage: ActionStage;
+  setStage: React.Dispatch<React.SetStateAction<ActionStage>>;
 }
 
 const SwapContext = createContext<SwapContextType | undefined>(undefined);
@@ -37,6 +41,7 @@ export const SwapProvider = ({ children }: { children: ReactNode }) => {
     toNetwork: null,
   });
 
+  const [stage, setStage] = useState(ActionStage.CONNECT);
   // Context functions to update the state
   const setFromToken = (token: string) =>
     setState((prev) => ({ ...prev, fromToken: token }));
@@ -53,6 +58,18 @@ export const SwapProvider = ({ children }: { children: ReactNode }) => {
   const setToNetwork = (toNetwork: string) =>
     setState((prev) => ({ ...prev, toNetwork }));
 
+  const swap = () => {
+    setState((prev) => ({
+      ...prev,
+      fromToken: prev.toToken,
+      fromNetwork: prev.toNetwork,
+      toToken: prev.fromToken,
+      fromAmount: prev.toAmount,
+      toAmount: prev.fromAmount,
+      toNetwork: prev.fromNetwork,
+    }));
+  };
+
   return (
     <SwapContext.Provider
       value={{
@@ -64,6 +81,9 @@ export const SwapProvider = ({ children }: { children: ReactNode }) => {
         setSlippage,
         setFromNetwork,
         setToNetwork,
+        swap,
+        stage,
+        setStage,
       }}
     >
       {children}

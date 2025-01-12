@@ -52,7 +52,6 @@ export const useTokenPrice = () => {
    */
   const getUsdEstimate = useCallback(
     (symbol: string, amount: number): number | null => {
-      console.log({ symbol, amount, prices });
       if (!prices[symbol]) {
         console.warn(`Price for ${symbol} is unavailable.`);
         return null;

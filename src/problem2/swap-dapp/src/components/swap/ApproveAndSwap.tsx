@@ -9,6 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FaSpinner } from "react-icons/fa6";
+import { useSwapContext } from "@/contexts/SwapContext";
+import { ActionStage } from "@/components/swap/ActionButton";
 
 interface ApproveAndSwapProps {
   fromToken: { name: string; amount: string; icon: string };
@@ -30,11 +32,15 @@ export const ApproveAndSwap: React.FC<ApproveAndSwapProps> = ({
   setOpen,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { setFromAmount, setStage } = useSwapContext();
   const handleClick = async () => {
     setIsLoading(true);
     try {
-      onSwap().then(() => setIsLoading(false));
+      onSwap().then(() => {
+        setFromAmount(0);
+        setIsLoading(false);
+        setStage(ActionStage.SELECT);
+      });
     } catch (error) {
       console.error("Error during swap:", error);
     }
