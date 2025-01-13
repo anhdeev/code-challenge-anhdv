@@ -1,12 +1,12 @@
-import { Role } from '@prisma/client';
+import { Role } from '../constants/common.const';
 import { Permission } from '../constants/auth.const';
 
 const allRoles = {
   [Role.USER]: [
     Permission.READ_USER,
-    Permission.VIEW_CHART,
-    Permission.EDIT_CHART,
-    Permission.ADD_ALERTEE
+    Permission.MANAGE_USER,
+    Permission.EDIT_ORDER,
+    Permission.VIEW_ORDER
   ],
   [Role.ADMIN]: [Permission.READ_USER, Permission.MANAGE_USER]
 };

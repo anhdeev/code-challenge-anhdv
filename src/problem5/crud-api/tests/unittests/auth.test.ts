@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import app from '../../src/app';
 import setupTestDB from '../utils/setupTestDb';
 import { describe, beforeEach, test, expect } from '@jest/globals';
-import { Role } from '@prisma/client';
+import { Role } from '../../src/constants/common.const';
 import prisma from '../../src/clients/prisma';
 
 setupTestDB();

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "predev": "kill -9 $(lsof -ti:3001) || exit 0",
-    "test": "",
+    "test": "jest --watch --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check **/*.ts",
@@ -41,9 +41,9 @@
     "eslint",
     "prettier"
   ],
-  "license": "",
+  "license": "UNLICENSED",
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0",
+    "@faker-js/faker": "^9.3.0",
     "@jest/globals": "^29.3.1",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.7",
@@ -64,7 +64,7 @@
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.2",
+    "husky": "^9.1.7",
     "jest": "^29.3.1",
     "lint-staged": "^13.1.0",
     "node-mocks-http": "^1.12.1",
@@ -79,7 +79,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@prisma/client": "^4.7.1",
+    "@prisma/client": "5.22.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^5.0.0",
     "@types/passport": "^1.0.17",
