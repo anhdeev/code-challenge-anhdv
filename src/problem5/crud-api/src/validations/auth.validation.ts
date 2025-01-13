@@ -3,7 +3,7 @@ import { password } from './custom.validation';
 
 const register = {
   body: Joi.object().keys({
-    name: Joi.string().optional(),
+    username: Joi.string().optional(),
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password)
   })

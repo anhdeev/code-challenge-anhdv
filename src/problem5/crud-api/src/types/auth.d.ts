@@ -10,3 +10,9 @@ export interface AuthTokensResponse {
   access: TokenResponse;
   refresh?: TokenResponse;
 }
+
+export interface Session {
+  userId: number;
+  iat: Date;
+  updatedAt: Date;
+}

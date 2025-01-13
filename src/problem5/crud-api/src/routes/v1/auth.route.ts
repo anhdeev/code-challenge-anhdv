@@ -2,175 +2,212 @@ import express from 'express';
 import validate from '../../middlewares/validate';
 import authValidation from '../../validations/auth.validation';
 import { authController } from '../../controllers';
-import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
-router.post('/register', validate(authValidation.register), authController.register);
-router.post('/login', validate(authValidation.login), authController.login);
-router.post('/logout', validate(authValidation.logout), authController.logout);
-router.post(
-  '/refresh-tokens',
-  validate(authValidation.refreshTokens),
-  authController.refreshTokens
-);
+// Register route
+router.post('/register', validate(authValidation.register), (req, res, next) => {
+  /* #swagger.tags = ['Authentication']
+     #swagger.summary = 'Register a new user'
+     #swagger.description = 'Allows users to create an account.'
+     #swagger.requestBody = {
+         required: true,
+         content: {
+             "application/json": {
+                 schema: {
+                     type: "object",
+                     properties: {
+                         email: { type: "string", format: "email", example: "user@example.com" },
+                         password: { type: "string", format: "password", example: "password123" },
+                         username: { type: "string", example: "user1" }
+                     },
+                     required: ["email", "password"]
+                 }
+             }
+         }
+     }
+     #swagger.responses[201] = {
+         description: 'User registered successfully',
+         content: {
+             "application/json": {
+                 schema: { $ref: "#/components/schemas/UserCredentialResponse" }
+             }
+         }
+     }
+     #swagger.responses[400] = {
+       description: 'Invalid request parameters',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E400' }
+         }
+       }
+     }
+     #swagger.responses[428] = {
+       description: 'Rate limit',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }
+    */
+  return authController.register(req, res, next);
+});
+
+// Login route
+router.post('/login', validate(authValidation.login), (req, res, next) => {
+  /* #swagger.tags = ['Authentication']
+     #swagger.summary = 'User login'
+     #swagger.description = 'Allows users to log in using email and password.'
+     #swagger.requestBody = {
+         required: true,
+         content: {
+             "application/json": {
+                 schema: {
+                     type: "object",
+                     properties: {
+                         email: { type: "string", format: "email", example: "user@example.com" },
+                         password: { type: "string", format: "password", example: "password123" }
+                     },
+                     required: ["email", "password"]
+                 }
+             }
+         }
+     }
+     #swagger.responses[200] = {
+         description: 'Login successful',
+         content: {
+             "application/json": {
+                 schema: { $ref: "#/components/schemas/UserCredentialResponse" }
+             }
+         }
+     }
+     #swagger.responses[400] = {
+       description: 'Invalid request parameters',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E400' }
+         }
+       }
+     }
+     #swagger.responses[428] = {
+       description: 'Rate limit',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }*/
+  return authController.login(req, res, next);
+});
+
+// Logout route
+router.post('/logout', validate(authValidation.logout), (req, res, next) => {
+  /* #swagger.tags = ['Authentication']
+     #swagger.summary = 'Logout user'
+     #swagger.description = 'Logs out a user by invalidating the refresh token.'
+     #swagger.requestBody = {
+         required: true,
+         content: {
+             "application/json": {
+                 schema: {
+                     type: "object",
+                     properties: {
+                         refreshToken: { type: "string", example: "some-refresh-token" }
+                     },
+                     required: ["refreshToken"]
+                 }
+             }
+         }
+     }
+     #swagger.responses[204] = ''
+     #swagger.responses[400] = {
+       description: 'Invalid request parameters',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E400' }
+         }
+       }
+     }
+     #swagger.responses[428] = {
+       description: 'Rate limit',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }*/
+  return authController.logout(req, res, next);
+});
+
+// Refresh tokens route
+router.post('/refresh-tokens', validate(authValidation.refreshTokens), (req, res, next) => {
+  /* #swagger.tags = ['Authentication']
+     #swagger.summary = 'Refresh authentication tokens'
+     #swagger.description = 'Allows users to refresh their access and refresh tokens using a valid refresh token.'
+     #swagger.requestBody = {
+         required: true,
+         content: {
+             "application/json": {
+                 schema: {
+                     type: "object",
+                     properties: {
+                         refreshToken: { type: "string", example: "some-refresh-token" }
+                     },
+                     required: ["refreshToken"]
+                 }
+             }
+         }
+     }
+     #swagger.responses[200] = {
+         description: 'Tokens refreshed successfully',
+         content: {
+              "application/json": {
+                 schema: { $ref: "#/components/schemas/AuthTokensResponse" }
+             }
+         }
+     }
+     #swagger.responses[400] = {
+       description: 'Invalid request parameters',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E400' }
+         }
+       }
+     }
+     #swagger.responses[401] = {
+       description: 'Unauthorized access',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E401' }
+         }
+       }
+     }
+     #swagger.responses[403] = {
+       description: 'Forbidden access',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E403' }
+         }
+       }
+     }
+     #swagger.responses[404] = {
+       description: 'Not found',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }
+     #swagger.responses[428] = {
+       description: 'Rate limit',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }*/
+  return authController.refreshTokens(req, res, next);
+});
+
 export default router;
-
-/**
- * @swagger
- * tags:
- *   name: Auth
- *   description: Authentication
- */
-
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     summary: Register as user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
- *               - password
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *                 description: must be unique
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 8
- *                 description: At least one number and one letter
- *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
- *     responses:
- *       "201":
- *         description: Created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *                 tokens:
- *                   $ref: '#/components/schemas/AuthTokens'
- *       "400":
- *         $ref: '#/components/responses/DuplicateEmail'
- */
-
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     summary: Login
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 format: password
- *             example:
- *               email: fake@example.com
- *               password: password1
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
- *                 tokens:
- *                   $ref: '#/components/schemas/AuthTokens'
- *       "401":
- *         description: Invalid email or password
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *             example:
- *               code: 401
- *               message: Invalid email or password
- */
-
-/**
- * @swagger
- * /auth/logout:
- *   post:
- *     summary: Logout
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- *             example:
- *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
- *     responses:
- *       "204":
- *         description: No content
- *       "404":
- *         $ref: '#/components/responses/NotFound'
- */
-
-/**
- * @swagger
- * /auth/refresh-tokens:
- *   post:
- *     summary: Refresh auth tokens
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- *             example:
- *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
- *     responses:
- *       "200":
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/AuthTokens'
- *       "401":
- *         $ref: '#/components/responses/Unauthorized'
- */

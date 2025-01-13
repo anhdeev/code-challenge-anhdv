@@ -72,6 +72,7 @@
     "prettier": "^2.8.1",
     "prisma": "^5.5.2",
     "supertest": "^6.3.3",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^5.0.0",
     "ts-jest": "^29.0.3",
@@ -102,7 +103,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "query-string": "^8.1.0",
-    "swagger-autogen": "^2.23.7",
+    "sqlite3": "^5.1.7",
     "winston": "^3.8.2"
   }
 }

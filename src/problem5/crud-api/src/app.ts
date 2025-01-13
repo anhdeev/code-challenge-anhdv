@@ -13,6 +13,8 @@ import routes from './routes/v1';
 import { errorConverter, errorHandler } from './middlewares/error';
 import ApiError from './utils/ApiError';
 import { AuthType } from './constants/auth.const';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 
 const app = express();
 
@@ -55,7 +57,7 @@ if (config.env === 'production') {
 app.use('/', routes);
 
 // autogen swagger
-// app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
