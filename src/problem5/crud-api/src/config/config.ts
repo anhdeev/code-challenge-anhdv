@@ -6,7 +6,7 @@ import { AuthType } from '../constants/auth.const';
 dotenv.config({
   path: path.join(
     process.cwd(),
-    `${process.env.NODE_ENV === 'production' ? 'env.production' : '.env'}`
+    `${process.env.NODE_ENV === 'production' ? '' : '.env.development'}`
   )
 });
 
@@ -44,7 +44,7 @@ export default {
   port: envVars.PORT,
   isLocal: envVars.IS_LOCAL,
   auth: {
-    type: AuthType.JWT,
+    type: AuthType.JWT
   },
   jwt: {
     secret: envVars.JWT_SECRET,
@@ -52,5 +52,5 @@ export default {
     refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
     resetPasswordExpirationMinutes: envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
     verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
-  },
+  }
 };
