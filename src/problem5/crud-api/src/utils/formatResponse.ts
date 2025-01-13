@@ -29,12 +29,14 @@ export const createUserCredentialResponse = (
   refreshToken?: TokenResponse
 ) => {
   return {
+    id: user.id,
     name: user.username || undefined,
     username: user.username || undefined,
     email: user.email || '',
     avatar: user.avatar || undefined,
     emailVerified: !!user.emailVerified,
     status: user.status,
+    role: user.role,
     tokens: {
       access: accessToken,
       refresh: refreshToken

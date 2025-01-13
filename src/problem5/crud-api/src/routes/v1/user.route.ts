@@ -332,48 +332,48 @@ router
 // Current user details route
 router.get('/me', auth(), (req, res, next) => {
   /**
-  #swagger.tags = ['Users']
-  #swagger.summary = 'Get details of the currently authenticated user'
-  #swagger.responses[200] = {
-    description: 'Authenticated user details retrieved successfully',
-    content: {
-      "application/json": {
-        schema: { $ref: '#/components/schemas/User' }
+    #swagger.tags = ['Users']
+    #swagger.summary = 'Get details of the currently authenticated user'
+    #swagger.responses[200] = {
+      description: 'Authenticated user details retrieved successfully',
+      content: {
+        "application/json": {
+          schema: { $ref: '#/components/schemas/User' }
+        }
       }
     }
-  }
-  #swagger.responses[400] = {
-    description: 'Invalid request parameters',
-    content: {
-      "application/json": {
-        schema: { $ref: '#/components/schemas/E400' }
+    #swagger.responses[400] = {
+      description: 'Invalid request parameters',
+      content: {
+        "application/json": {
+          schema: { $ref: '#/components/schemas/E400' }
+        }
       }
     }
-  }
-  #swagger.responses[401] = {
-    description: 'Unauthorized access',
-    content: {
-      "application/json": {
-        schema: { $ref: '#/components/schemas/E401' }
+    #swagger.responses[401] = {
+      description: 'Unauthorized access',
+      content: {
+        "application/json": {
+          schema: { $ref: '#/components/schemas/E401' }
+        }
       }
     }
-  }
-  #swagger.responses[403] = {
-    description: 'Forbidden access',
-    content: {
-      "application/json": {
-        schema: { $ref: '#/components/schemas/E403' }
+    #swagger.responses[403] = {
+      description: 'Forbidden access',
+      content: {
+        "application/json": {
+          schema: { $ref: '#/components/schemas/E403' }
+        }
       }
     }
-  }
-  #swagger.responses[428] = {
-    description: 'Rate limit',
-    content: {
-      "application/json": {
-        schema: { $ref: '#/components/schemas/E404' }
+    #swagger.responses[428] = {
+      description: 'Rate limit',
+      content: {
+        "application/json": {
+          schema: { $ref: '#/components/schemas/E404' }
+        }
       }
     }
-  }
   */
   return userController.getMe(req, res, next);
 });

@@ -21,6 +21,10 @@ const doc = {
     {
       name: 'Users',
       description: 'User-related endpoints'
+    },
+    {
+      name: 'Orders',
+      description: 'Order-related endpoints'
     }
   ],
   components: {
@@ -194,6 +198,108 @@ const doc = {
             example: '2023-01-03T00:00:00Z'
           }
         }
+      },
+      Order: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'integer',
+            example: 1,
+            description: 'Unique identifier for the order'
+          },
+          userId: {
+            type: 'integer',
+            example: 101,
+            description: 'ID of the user who placed the order'
+          },
+          status: {
+            type: 'string',
+            enum: ['PENDING', 'COMPLETED'],
+            example: 'PENDING',
+            description: 'Order status'
+          },
+          totalAmount: {
+            type: 'number',
+            example: 150.75,
+            description: 'Total amount for the order'
+          },
+          createdAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2023-12-31T23:59:59Z',
+            description: 'Timestamp when the order was created'
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'date-time',
+            example: '2024-01-01T12:00:00Z',
+            description: 'Timestamp when the order was last updated'
+          },
+          deletedAt: {
+            type: 'string',
+            format: 'date-time',
+            example: null,
+            description: 'Timestamp when the order was deleted, if applicable'
+          },
+          user: {
+            $ref: '#/components/schemas/User',
+            description: 'The user who placed the order'
+          },
+          items: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/OrderItem'
+            },
+            description: 'List of items in the order'
+          }
+        },
+        required: ['id', 'userId', 'status', 'totalAmount', 'createdAt', 'user', 'items']
+      },
+      OrderItem: {
+        type: 'object',
+        properties: {
+          productId: {
+            type: 'integer',
+            example: 101
+          },
+          productName: {
+            type: 'string',
+            example: 'Product A'
+          },
+          quantity: {
+            type: 'integer',
+            example: 2
+          },
+          price: {
+            type: 'number',
+            example: 50.25
+          }
+        },
+        required: ['productId', 'productName', 'quantity', 'price']
+      },
+      OrderRequest: {
+        type: 'object',
+        properties: {
+          userId: {
+            type: 'integer',
+            example: 1
+          },
+          status: {
+            type: 'string',
+            example: 'PENDING'
+          },
+          totalAmount: {
+            type: 'number',
+            example: 150.5
+          },
+          items: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/OrderItem'
+            }
+          }
+        },
+        required: ['userId', 'items', 'totalAmount']
       },
       UserCredentialResponse: {
         type: 'object',

@@ -5,12 +5,14 @@
     "rootDir": "./",
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
     "strictNullChecks": true
-  }
+  },
+  "include": ["tests/**/*", "src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
