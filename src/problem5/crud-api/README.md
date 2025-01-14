@@ -6,7 +6,7 @@ yarn install
 ```
 ## Commands
 
-Database:
+Database initialization:
 
 ```bash
 # init db
