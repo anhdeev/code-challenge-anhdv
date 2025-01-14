@@ -67,7 +67,7 @@ router
     }*/
     return userController.createUser(req, res, next);
   })
-  .get(auth(Permission.READ_USER), validate(userValidation.getUsers), (req, res, next) => {
+  .get(auth(Permission.MANAGE_USER), validate(userValidation.getUsers), (req, res, next) => {
     /**
     #swagger.tags = ['Users']
     #swagger.summary = 'Get a list of users'
@@ -124,8 +124,8 @@ router
 
 // User by ID routes
 router
-  .route('/user/:userId')
-  .get(auth(Permission.READ_USER), validate(userValidation.getUsers), (req, res, next) => {
+  .route('/:userId')
+  .get(auth(Permission.READ_USER), validate(userValidation.getUser), (req, res, next) => {
     /**
      #swagger.tags = ['Users']
      #swagger.summary = 'Get a list of users'
@@ -211,7 +211,7 @@ router
        }
      }
      */
-    return userController.getUsers(req, res, next);
+    return userController.getUser(req, res, next);
   })
   .patch(auth(Permission.MANAGE_USER), validate(userValidation.updateUser), (req, res, next) => {
     /**

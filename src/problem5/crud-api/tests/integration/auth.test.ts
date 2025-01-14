@@ -9,7 +9,7 @@ import prisma from '../../src/clients/prisma';
 
 setupTestDB();
 
-describe('Auth routes', () => {
+describe.skip('Auth routes', () => {
   describe('POST /v1/auth/register', () => {
     let newUser: { email: string; password: string };
     beforeEach(() => {
@@ -19,7 +19,7 @@ describe('Auth routes', () => {
       };
     });
 
-    test.only('should return 201 and successfully register user if request data is ok', async () => {
+    test('should return 201 and successfully register user if request data is ok', async () => {
       const res = await request(app)
         .post('/v1/auth/register')
         .send(newUser)

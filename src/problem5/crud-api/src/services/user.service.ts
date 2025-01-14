@@ -85,13 +85,14 @@ const queryUsers = async <Key extends keyof User>(
   }
   const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
   const orderByClause = sortBy ? `ORDER BY "${sortBy}" ${sortType}` : '';
-  const rawSql = Prisma.sql`SELECT ${Prisma.raw(selectClause)}
-        FROM "User"
-        ${Prisma.raw(whereClause)}
-        ${Prisma.raw(orderByClause)}
-        OFFSET ${Prisma.raw(offset.toString())}
-        LIMIT ${Prisma.raw(limit.toString())};
-        `;
+  const rawSql = Prisma.sql`
+  SELECT ${Prisma.raw(selectClause)}
+  FROM "User"
+  ${Prisma.raw(whereClause)}
+  ${Prisma.raw(orderByClause)}
+  LIMIT ${Prisma.raw(limit.toString())}
+  OFFSET ${Prisma.raw(offset.toString())};
+`;
 
   const users = await prisma.$queryRaw<User[]>(rawSql, searchQuery, offset, limit);
   return users;
