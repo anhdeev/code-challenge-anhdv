@@ -298,7 +298,7 @@ router
     /**
      #swagger.security = [{
         "bearerAuth": []
-      }]
+    }]
     #swagger.tags = ['Users']
     #swagger.summary = 'Delete a user by ID'
     #swagger.parameters['userId'] = {

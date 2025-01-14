@@ -3,7 +3,7 @@
   "info": {
     "title": "CRUD API",
     "version": "1.0.0",
-    "description": "CRUD API document"
+    "description": "This API provides CRUD operations for managing users and their associated orders. \n\nRole-based authentication is implemented to ensure proper access control.\n\nAdmin Login:\n- Email: admin@example.com\n- Password: password1"
   },
   "servers": [
     {
