@@ -2,14 +2,13 @@ import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import httpStatus from 'http-status';
 import app from '../../src/app';
-import setupTestDB from '../utils/setupTestDb';
 import { describe, beforeEach, test, expect } from '@jest/globals';
 import { Role } from '../../src/constants/common.const';
 import prisma from '../../src/clients/prisma';
 
-setupTestDB();
+// setupTestDB();
 
-describe.skip('Auth routes', () => {
+describe('Auth routes', () => {
   describe('POST /v1/auth/register', () => {
     let newUser: { email: string; password: string };
     beforeEach(() => {
@@ -25,7 +24,6 @@ describe.skip('Auth routes', () => {
         .send(newUser)
         .expect(httpStatus.CREATED);
 
-      console.log(res.body);
       expect(res.body).not.toHaveProperty('password');
       expect(res.body).toEqual(
         expect.objectContaining({

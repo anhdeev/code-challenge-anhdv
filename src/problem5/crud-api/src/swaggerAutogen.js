@@ -29,11 +29,10 @@ const doc = {
   ],
   components: {
     securitySchemes: {
-      apiKeyAuth: {
-        type: 'apiKey',
-        in: 'header', // Can be "header", "query", or "cookie"
-        name: 'X-API-KEY', // Name of the header, query parameter, or cookie
-        description: 'API key needed to authorize requests'
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
       }
     },
     schemas: {

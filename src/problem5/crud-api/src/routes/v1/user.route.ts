@@ -12,6 +12,9 @@ router
   .route('/')
   .post(auth(Permission.MANAGE_USER), validate(userValidation.createUser), (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
     #swagger.tags = ['Users']
     #swagger.summary = 'Create a new user'
     #swagger.description = 'Only admins can create new users.'
@@ -69,6 +72,9 @@ router
   })
   .get(auth(Permission.MANAGE_USER), validate(userValidation.getUsers), (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
     #swagger.tags = ['Users']
     #swagger.summary = 'Get a list of users'
     #swagger.parameters['search'] = { description: 'Search term to filter users by name or email' }
@@ -127,6 +133,9 @@ router
   .route('/:userId')
   .get(auth(Permission.READ_USER), validate(userValidation.getUser), (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Users']
      #swagger.summary = 'Get a list of users'
      #swagger.description = 'Retrieve a list of users with optional filters and pagination.'
@@ -215,6 +224,9 @@ router
   })
   .patch(auth(Permission.MANAGE_USER), validate(userValidation.updateUser), (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
     #swagger.tags = ['Users']
     #swagger.summary = 'Update user details by ID'
     #swagger.parameters['userId'] = {
@@ -284,6 +296,9 @@ router
   })
   .delete(auth(Permission.MANAGE_USER), validate(userValidation.deleteUser), (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
     #swagger.tags = ['Users']
     #swagger.summary = 'Delete a user by ID'
     #swagger.parameters['userId'] = {
@@ -328,54 +343,5 @@ router
     */
     return userController.deleteUser(req, res, next);
   });
-
-// Current user details route
-router.get('/me', auth(), (req, res, next) => {
-  /**
-    #swagger.tags = ['Users']
-    #swagger.summary = 'Get details of the currently authenticated user'
-    #swagger.responses[200] = {
-      description: 'Authenticated user details retrieved successfully',
-      content: {
-        "application/json": {
-          schema: { $ref: '#/components/schemas/User' }
-        }
-      }
-    }
-    #swagger.responses[400] = {
-      description: 'Invalid request parameters',
-      content: {
-        "application/json": {
-          schema: { $ref: '#/components/schemas/E400' }
-        }
-      }
-    }
-    #swagger.responses[401] = {
-      description: 'Unauthorized access',
-      content: {
-        "application/json": {
-          schema: { $ref: '#/components/schemas/E401' }
-        }
-      }
-    }
-    #swagger.responses[403] = {
-      description: 'Forbidden access',
-      content: {
-        "application/json": {
-          schema: { $ref: '#/components/schemas/E403' }
-        }
-      }
-    }
-    #swagger.responses[428] = {
-      description: 'Rate limit',
-      content: {
-        "application/json": {
-          schema: { $ref: '#/components/schemas/E404' }
-        }
-      }
-    }
-  */
-  return userController.getMe(req, res, next);
-});
 
 export default router;

@@ -54,6 +54,12 @@ const saveToken = async (
         }
     });
 
+    console.log({
+        userId,
+        token,
+        type,
+        expires: expires.toDate()
+    })
     return prisma.token.create({
         data: {
             userId,

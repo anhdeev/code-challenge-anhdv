@@ -26,6 +26,16 @@
     }
   ],
   "paths": {
+    "/health": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/v1/auth/register": {
       "post": {
         "tags": [
@@ -404,7 +414,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -417,6 +432,11 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -429,7 +449,7 @@
         }
       }
     },
-    "/v1/user/user/{userId}": {
+    "/v1/user/{userId}": {
       "get": {
         "tags": [
           "Users"
@@ -557,7 +577,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -620,7 +645,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -701,73 +731,17 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UserUpdate"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/user/me": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get details of the currently authenticated user",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "Authenticated user details retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/E400"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized access",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/E401"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden access",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/E403"
-                }
-              }
-            }
-          },
-          "428": {
-            "description": "Rate limit",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/E404"
-                }
               }
             }
           }
@@ -833,6 +807,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -914,7 +893,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -985,6 +969,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1061,6 +1050,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1149,7 +1143,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/v1/order/{orderId}/items": {
@@ -1232,6 +1231,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1315,6 +1319,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1342,11 +1351,10 @@
   },
   "components": {
     "securitySchemes": {
-      "apiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-KEY",
-        "description": "API key needed to authorize requests"
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {

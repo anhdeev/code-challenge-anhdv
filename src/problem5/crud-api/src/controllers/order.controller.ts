@@ -13,7 +13,7 @@ const createOrder = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Order must have at least one item.');
   }
 
-  const order = await orderService.createOrder({ status, totalAmount, user: userId }, items);
+  const order = await orderService.createOrder({ status, totalAmount, user: {connect: { id: userId } } }, items);
 
   res.status(httpStatus.CREATED).send(order);
 });
@@ -58,7 +58,6 @@ const updateOrder = catchAsync(async (req, res) => {
  */
 const deleteOrderById = catchAsync(async (req, res) => {
   const { orderId } = req.params;
-
   await orderService.deleteOrderById(Number(orderId));
   res.status(httpStatus.NO_CONTENT).send();
 });

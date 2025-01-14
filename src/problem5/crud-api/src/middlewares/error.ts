@@ -6,6 +6,7 @@ import logger from '../config/logger';
 import ApiError from '../utils/ApiError';
 
 export const errorConverter: ErrorRequestHandler = (err, req, res, next) => {
+  logger.error('API error:', err)
   let error = err;
   if (!(error instanceof ApiError)) {
     const statusCode =

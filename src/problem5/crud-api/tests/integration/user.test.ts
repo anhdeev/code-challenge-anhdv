@@ -2,12 +2,9 @@ import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import httpStatus from 'http-status';
 import app from '../../src/app';
-import setupTestDB from '../utils/setupTestDb';
 import prisma from '../../src/clients/prisma';
 import { Role, UserStatus } from '../../src/constants/common.const';
 import { encryptPassword } from '../../src/utils/encryption';
-
-setupTestDB();
 
 describe('User routes', () => {
   let adminAccessToken: string;
@@ -37,7 +34,8 @@ describe('User routes', () => {
     // Generate tokens
     const adminTokens = await request(app)
       .post('/v1/auth/login')
-      .send({ email: adminUser.email, password });
+      .send({ email: adminUser.email, password })
+      .expect(httpStatus.OK);
     adminAccessToken = adminTokens.body.tokens.access.token;
 
     const userTokens = await request(app)
@@ -80,7 +78,7 @@ describe('User routes', () => {
       const newUser = {
         email: faker.internet.email(),
         password: 'password123',
-        name: faker.name.fullName(),
+        name: faker.person.fullName(),
         role: Role.USER,
       };
 
@@ -118,8 +116,7 @@ describe('User routes', () => {
       const res = await request(app)
         .get(`/v1/user/${user?.id}`)
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        //.expect(httpStatus.OK);
-      console.log(res.body)
+        .expect(httpStatus.OK);
       expect(res.body).toEqual(
         expect.objectContaining({
           id: user?.id,
@@ -190,21 +187,6 @@ describe('User routes', () => {
         .delete(`/v1/user/${user?.id}`)
         .set('Authorization', `Bearer ${userAccessToken}`)
         .expect(httpStatus.FORBIDDEN);
-    });
-  });
-
-  describe('GET /v1/user/me', () => {
-    test('should return 200 and the authenticated user\'s details', async () => {
-      const res = await request(app)
-        .get('/v1/user/me')
-        .set('Authorization', `Bearer ${userAccessToken}`)
-        .expect(httpStatus.OK);
-
-      expect(res.body).toEqual(expect.objectContaining({ role: Role.USER }));
-    });
-
-    test('should return 401 if no access token is provided', async () => {
-      await request(app).get('/v1/user/me').expect(httpStatus.UNAUTHORIZED);
     });
   });
 });

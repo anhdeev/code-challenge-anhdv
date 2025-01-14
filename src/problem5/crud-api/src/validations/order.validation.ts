@@ -11,7 +11,8 @@ const orderValidation = {
             productId: Joi.number().required(),
             productName: Joi.string().required(),
             quantity: Joi.number().required(),
-            price: Joi.number().required()
+            price: Joi.number().required(),
+            total: Joi.number()
           })
         )
         .required()
@@ -39,7 +40,8 @@ const orderValidation = {
           productId: Joi.number().required(),
           productName: Joi.string().required(),
           quantity: Joi.number().required(),
-          price: Joi.number().required()
+          price: Joi.number().required(),
+          total: Joi.number().optional()
         })
       )
     })

@@ -6,7 +6,7 @@ import { AuthType } from '../constants/auth.const';
 dotenv.config({
   path: path.join(
     process.cwd(),
-    `${process.env.NODE_ENV === 'production' ? '' : '.env.development'}`
+    `${process.env.NODE_ENV === 'production' ? '' : '.env'}`
   )
 });
 

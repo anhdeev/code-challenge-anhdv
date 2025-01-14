@@ -14,6 +14,9 @@ router.post(
   validate(orderValidation.createOrder),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Create a new order'
      #swagger.description = 'Allows creating a new order with associated items.'
@@ -77,6 +80,9 @@ router.get(
   validate(orderValidation.getOrderById),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Get order by ID'
      #swagger.description = 'Retrieve details of a specific order by its ID.'
@@ -138,6 +144,9 @@ router.get(
   validate(orderValidation.getOrdersByUserId),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Get orders by user ID'
      #swagger.description = 'Retrieve all orders associated with a specific user.'
@@ -202,6 +211,9 @@ router.patch(
   validate(orderValidation.updateOrder),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Update an order'
      #swagger.description = 'Update details of an order including its items.'
@@ -271,6 +283,9 @@ router.delete(
   validate(orderValidation.deleteOrder),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Delete an order'
      #swagger.description = 'Delete a specific order by its ID.'
@@ -325,6 +340,9 @@ router.post(
   validate(orderValidation.addItemsToOrder),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Add items to an order'
      #swagger.description = 'Add additional items to an existing order.'
@@ -407,6 +425,9 @@ router.delete(
   validate(orderValidation.removeItemsFromOrder),
   (req, res, next) => {
     /**
+     #swagger.security = [{
+        "bearerAuth": []
+      }]
      #swagger.tags = ['Orders']
      #swagger.summary = 'Remove items from an order'
      #swagger.description = 'Remove specific items from an existing order.'
