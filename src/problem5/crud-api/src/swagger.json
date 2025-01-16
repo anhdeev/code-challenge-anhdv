@@ -68,7 +68,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -139,7 +139,17 @@
               }
             }
           },
-          "428": {
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/E404"
+                }
+              }
+            }
+          },
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -199,7 +209,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -289,7 +299,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -362,6 +372,22 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "filter user list by name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "filter user list by role",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -408,7 +434,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -458,63 +484,13 @@
         "tags": [
           "Users"
         ],
-        "summary": "Get a list of users",
-        "description": "Retrieve a list of users with optional filters and pagination.",
+        "summary": "Get a specific user",
+        "description": "Retrieve an user",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search term to filter users by name, email, or username",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "in": "query",
-            "description": "Sort users by a specific field and direction (e.g., name:asc, role:desc)",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Maximum number of users per page",
-            "default": 10,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number for paginated results",
-            "default": 1,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "description": "filter user list by name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "role",
-            "in": "query",
-            "description": "filter user list by role",
             "schema": {
               "type": "string"
             }
@@ -571,7 +547,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -639,7 +615,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -724,7 +700,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -800,7 +776,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -887,7 +863,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -962,7 +938,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -1043,7 +1019,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -1137,7 +1113,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -1224,7 +1200,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {
@@ -1312,7 +1288,7 @@
               }
             }
           },
-          "428": {
+          "429": {
             "description": "Rate limit",
             "content": {
               "application/json": {

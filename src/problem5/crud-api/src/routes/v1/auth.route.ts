@@ -42,7 +42,7 @@ router.post('/register', validate(authValidation.register), (req, res, next) => 
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -90,8 +90,16 @@ router.post('/login', validate(authValidation.login), (req, res, next) => {
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
+       content: {
+         "application/json": {
+           schema: { $ref: '#/components/schemas/E404' }
+         }
+       }
+     }
+     #swagger.responses[404] = {
+       description: 'Not found',
        content: {
          "application/json": {
            schema: { $ref: '#/components/schemas/E404' }
@@ -129,7 +137,7 @@ router.post('/logout', validate(authValidation.logout), (req, res, next) => {
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -199,7 +207,7 @@ router.post('/refresh-tokens', validate(authValidation.refreshTokens), (req, res
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {

@@ -44,6 +44,17 @@ yarn test
 
 
 ## Features
+- Provide CRUD api for User and Order resources as well as Authentication method
+- Passport JWT
+- Role-based user authorization
+- Search, pagination, filter
+- Swagger API
+
+## Enhancement
+- Enhance full-text search functionality.
+- Create searchIndex field, combining multiple fields to be searching.
+- Search, pagination, filter
+- Swagger API
 
 - **SQL database**
 

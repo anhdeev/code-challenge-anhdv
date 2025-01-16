@@ -81,7 +81,7 @@ const queryUsers = async <Key extends keyof User>(
     }
   }
   if (searchQuery) {
-    whereClauses.push(`"searchIndex" @@ to_tsquery('${searchQuery}:*')`);
+    whereClauses.push(`email like '%${searchQuery}%'`);
   }
   const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
   const orderByClause = sortBy ? `ORDER BY "${sortBy}" ${sortType}` : '';

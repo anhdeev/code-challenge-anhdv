@@ -60,7 +60,7 @@ router.post(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -124,7 +124,7 @@ router.get(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -191,7 +191,7 @@ router.get(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -263,7 +263,7 @@ router.patch(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -320,7 +320,7 @@ router.delete(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -405,7 +405,7 @@ router.post(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {
@@ -486,7 +486,7 @@ router.delete(
           }
         }
       }
-      #swagger.responses[428] = {
+      #swagger.responses[429] = {
         description: 'Rate limit',
         content: {
           "application/json": {

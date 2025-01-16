@@ -59,7 +59,7 @@ router
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -81,6 +81,16 @@ router
     #swagger.parameters['sortBy'] = { description: 'Sort users by a specific field (e.g., name:asc)' }
     #swagger.parameters['limit'] = { description: 'Maximum number of users per page', default: 10 }
     #swagger.parameters['page'] = { description: 'Page number for paginated results', default: 1 }
+    #swagger.parameters['name'] = {
+      in: 'query',
+      type: 'string',
+      description: 'filter user list by name'
+    }
+    #swagger.parameters['role'] = {
+      in: 'query',
+      type: 'string',
+      description: 'filter user list by role'
+    }
     #swagger.responses[200] = {
       description: 'List of users retrieved successfully',
       content: {
@@ -116,7 +126,7 @@ router
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -137,40 +147,8 @@ router
         "bearerAuth": []
       }]
      #swagger.tags = ['Users']
-     #swagger.summary = 'Get a list of users'
-     #swagger.description = 'Retrieve a list of users with optional filters and pagination.'
-     #swagger.parameters['search'] = {
-       in: 'query',
-       type: 'string',
-       description: 'Search term to filter users by name, email, or username'
-     }
-     #swagger.parameters['sortBy'] = {
-       in: 'query',
-       type: 'string',
-       description: 'Sort users by a specific field and direction (e.g., name:asc, role:desc)'
-     }
-     #swagger.parameters['limit'] = {
-       in: 'query',
-       type: 'integer',
-       description: 'Maximum number of users per page',
-       default: 10
-     }
-     #swagger.parameters['page'] = {
-       in: 'query',
-       type: 'integer',
-       description: 'Page number for paginated results',
-       default: 1
-     }
-     #swagger.parameters['name'] = {
-       in: 'query',
-       type: 'string',
-       description: 'filter user list by name'
-     }
-     #swagger.parameters['role'] = {
-       in: 'query',
-       type: 'string',
-       description: 'filter user list by role'
-     }
+     #swagger.summary = 'Get a specific user'
+     #swagger.description = 'Retrieve an user'
      #swagger.responses[200] = {
        description: 'List of users retrieved successfully',
        content: {
@@ -211,7 +189,7 @@ router
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -283,7 +261,7 @@ router
          }
        }
      }
-     #swagger.responses[428] = {
+     #swagger.responses[429] = {
        description: 'Rate limit',
        content: {
          "application/json": {
@@ -332,7 +310,7 @@ router
         }
       }
     }
-    #swagger.responses[428] = {
+    #swagger.responses[429] = {
       description: 'Rate limit',
       content: {
         "application/json": {
