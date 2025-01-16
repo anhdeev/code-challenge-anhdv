@@ -23,9 +23,6 @@ if (config.env !== 'test') {
   app.use(morgan.errorHandler);
 }
 
-// set security HTTP headers
-app.use(helmet());
-
 // Use cookie-parser middleware
 app.use(cookieParser());
 
@@ -58,6 +55,9 @@ app.use('/', routes);
 
 // autogen swagger
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// set security HTTP headers
+app.use(helmet());
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {

@@ -9,8 +9,12 @@ const doc = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
-      description: 'Local development server'
+      "url": "http://45.77.243.25/",
+      "description": "Demo server"
+    },
+    {
+      "url": "http://127.0.0.1:3000",
+      "description": "Local server"
     }
   ],
   tags: [
