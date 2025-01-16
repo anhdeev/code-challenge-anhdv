@@ -1,177 +1,131 @@
-Specification for Real-Time Scoreboard API Module
+# Real-Time Scoreboard API Module
 
-Table of Contents
-	1.	Overview
-	2.	Functional Requirements
-	3.	Architecture Overview
-	4.	API Design
-	5.	Authentication and Authorization
-	6.	Rate Limiting
-	7.	Security Considerations
-	8.	Infrastructure Components
-	9.	Flow of Execution
-	10.	Database Design
-	11.	Implementation Notes
-	12.	Additional Enhancements
+This project provides an API to manage real-time score updates, maintain a top N leaderboard, and broadcast leaderboard updates to clients. It uses a combination of various technologies for scalability, reliability, and low-latency performance.
 
-1. Overview
+## Functional Requirements
 
-The module is responsible for securely managing real-time updates to a scoreboard that displays the top 10 users based on their scores. The API will validate requests, update scores, and push real-time updates to connected clients. The solution incorporates:
-	•	Kong Gateway for API management.
-	•	AWS Secrets Manager for secure storage of sensitive data.
-	•	OAuth 2.0 for secure user authentication.
-	•	Rate Limiting to prevent abuse.
+- **Authenticated Score Updates**: Only authenticated users can update their scores via the API.
+- **Anti-Cheat**: Secure the score update process to prevent cheating through encryption.
+- **Real-Time Leaderboard**: Maintain a real-time top N leaderboard in Redis.
+- **Real-Time Updates**: Support WebSocket-based broadcasting and HTTP requests for querying the leaderboard.
+- **Score Update Processing**: Use background job processing for score updates.
+- **Audit Logging**: Log all score updates for audit and analytics.
 
-2. Functional Requirements
-	1.	Live Scoreboard Updates:
-	•	Clients should receive real-time updates when the leaderboard changes.
-	•	The top 10 scores should be dynamically fetched.
-	2.	Score Update API:
-	•	Users should be able to increment their scores through secure API requests.
-	•	Each score update must be authenticated and authorized.
-	3.	Security:
-	•	Protect against unauthorized updates.
-	•	Prevent malicious or excessive API usage with rate limiting.
-	4.	Scalability:
-	•	Handle large volumes of concurrent requests without impacting performance.
-	•	Ensure durability of score updates.
+## Non-Functional Requirements
 
-3. Architecture Overview
+- **Scalability**: Handle thousands of concurrent score updates.
+- **Low Latency**: Update the leaderboard with minimal delays.
+- **Reliability**: Ensure no data loss during job processing, even in failure scenarios.
+- **Monitoring**: Track performance metrics, errors, and activity for troubleshooting.
 
-Key Components:
-	•	API Gateway (Kong):
-	•	Handles API requests.
-	•	Enforces rate limiting, OAuth 2.0, and traffic control.
-	•	Redis:
-	•	Acts as a high-performance in-memory cache for real-time scores.
-	•	Manages leaderboard updates using sorted sets.
-	•	Database (PostgreSQL):
-	•	Stores persistent user and score data.
-	•	Periodic updates from Redis ensure data durability.
-	•	AWS Secrets Manager:
-	•	Manages sensitive credentials (e.g., database credentials, OAuth keys).
-	•	WebSockets:
-	•	Provides real-time updates to clients when leaderboard changes.
-	•	Background Workers:
-	•	Process batched updates from Redis to the database.
+## Solution Overview
 
-4. API Design
+The architecture combines multiple services for secure, scalable, and efficient handling of score updates:
 
-Endpoints
+- **Kong Gateway**: Manages API authentication, rate limiting, and integrates seamlessly into CI/CD processes.
+- **RabbitMQ**: Asynchronous processing of score updates, ensuring reliability and scalability.
+- **Redis**: In-memory cache for fast leaderboard operations.
+- **PostgreSQL**: Stores user scores and historical logs.
+- **WebSocket Services**: For real-time leaderboard updates.
+- **EFK Stack**: For logging historical score updates and monitoring.
+- **AWS Lambda**: Used for background processing and periodic tasks like broadcasting leaderboard updates.
 
-1. Update Score
-	•	POST /api/scores/update
-	•	Description: Updates the user’s score after an action.
-	•	Request Payload:
+![Architecture Diagram](https://github.com/user-attachments/assets/b18ec454-9b65-45bd-8042-fd9f71f55d71)
 
-{
-  "userId": "string",
-  "actionId": "string"
-}
+## System Architecture
 
+1. **Clients**: Clients send HTTP requests for score updates and receive real-time updates via WebSocket.
+2. **Kong Gateway**: Secures APIs with OAuth2 and manages rate limiting.
+3. **Score Service**: Receives requests, validates payloads, and logs events.
+4. **RabbitMQ**: Buffers requests for worker processing.
+5. **Workers**: AWS Lambda processes batch updates, handles Redis and database updates.
+6. **EFK Stack**: Captures logs for analytics and debugging.
 
-	•	Response:
+![Flow of Execution](https://github.com/user-attachments/assets/221b931e-fe94-4165-a520-0ce78347e440)
 
-{
-  "success": true,
-  "newScore": 150
-}
+## Database Design
 
+- **Users Table**:
+    ```sql
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        userId VARCHAR(50) UNIQUE NOT NULL,
+        score INTEGER DEFAULT 0,
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
+- **Historical Logs Table (Optional)**:
+    ```sql
+    CREATE TABLE score_logs (
+        id SERIAL PRIMARY KEY,
+        userId VARCHAR(50) NOT NULL,
+        scoreChange INTEGER NOT NULL,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
 
-	•	Rate Limit: 10 requests per minute per user.
+- **Indexes**: 
+  - Create an index on `userId` for fast lookups.
+  - Partition `score_logs` by `timestamp` for efficient querying and long-term run.
 
-2. Get Leaderboard
-	•	GET /api/scores/leaderboard
-	•	Description: Retrieves the top 10 scores.
-	•	Response:
+## API Endpoints
 
-{
-  "leaderboard": [
-    { "rank": 1, "userId": "u123", "score": 1200 },
-    { "rank": 2, "userId": "u124", "score": 1100 }
-  ]
-}
+### 1. **Update Score**
+- **POST /api/scores/update**: Updates the score after an action.
+- **Request Payload**:
+    ```json
+    {
+      "userId": "string",
+      "actionId": "string"
+    }
+    ```
+- **Response**:
+    ```json
+    {
+      "success": true,
+      "newScore": 150
+    }
+    ```
+- **Rate Limiting**: 10 requests per minute per user.
 
+### 2. **Get Leaderboard**
+- **GET /api/scores/leaderboard**: Retrieves the top 10 leaderboard.
+- **Response**:
+    ```json
+    {
+      "leaderboard": [
+        { "rank": 1, "userId": "u123", "score": 1200 },
+        { "rank": 2, "userId": "u124", "score": 1100 }
+      ]
+    }
+    ```
 
+## Authentication and Authorization
 
-3. Real-Time Leaderboard Updates
-	•	WebSocket /ws/scoreboard
-	•	Description: Streams live leaderboard updates to connected clients.
+- **OAuth2 Integration**:
+  - Kong Gateway validates OAuth2 Bearer tokens.
+  - Scopes:
+    - `update:score` for updating scores.
+    - `read:leaderboard` for accessing the leaderboard.
 
-5. Authentication and Authorization
-	1.	OAuth 2.0 via Kong Gateway:
-	•	Use OAuth 2.0 for user authentication and access control.
-	•	Tokens are validated by Kong before forwarding requests to the API.
-	2.	Scope Management:
-	•	Define scopes for actions (e.g., update:score, read:leaderboard).
-	•	Only authorized users can increment scores.
+- **Role-Based Access Control (RBAC)**: Manages user roles and permissions.
 
-6. Rate Limiting
-	•	Rate Limiting via Kong Gateway:
-	•	Limit to 10 requests per minute per user for the POST /api/scores/update endpoint.
-	•	Enforced at the gateway layer to minimize load on the application server.
+![RBAC Diagram](https://github.com/user-attachments/assets/358eccb2-c45d-4d36-86e2-6e859913db75)
 
-7. Security Considerations
-	1.	AWS Secrets Manager:
-	•	Store sensitive information (e.g., database credentials, Redis keys, OAuth secrets).
-	•	Rotate secrets periodically to reduce exposure risks.
-	2.	JWT Validation:
-	•	Ensure all incoming requests include a valid JWT with a signature verified against the OAuth provider.
-	3.	Input Validation:
-	•	Sanitize and validate all inputs (e.g., userId, actionId) to prevent injection attacks.
-	4.	Redis Persistence:
-	•	Enable Redis append-only file (AOF) for durability.
+## Performance and Scalability
 
-8. Infrastructure Components
-	1.	Kong Gateway:
-	•	API gateway for request validation, rate limiting, and traffic management.
-	2.	Redis:
-	•	Real-time cache and leaderboard manager.
-	3.	AWS Secrets Manager:
-	•	Secure storage for sensitive configurations.
-	4.	Database (PostgreSQL):
-	•	Durable storage for user and score data.
-	5.	WebSocket Server:
-	•	Real-time communication with clients.
+The system is designed to handle thousands of concurrent score updates, ensuring minimal latency and high availability.
 
-9. Flow of Execution
-	1.	Score Update Flow:
-	•	User action triggers a POST /api/scores/update request.
-	•	Kong validates the OAuth token and rate limits the request.
-	•	The API increments the score in Redis and logs the update to a persistent queue.
-	•	Redis manages leaderboard updates.
-	•	Background workers flush updates to the database periodically.
-	2.	Leaderboard Retrieval:
-	•	Client fetches the leaderboard from the GET /api/scores/leaderboard endpoint or subscribes to real-time updates via WebSocket.
+## Error Handling
 
-10. Database Design
+- **Job Failures**: Use RabbitMQ Dead Letter Queues (DLQ) to handle failed jobs, with retries using exponential backoff.
+- **Redis/Database Failures**: If Redis is unavailable, fallback to database for leaderboard queries and initialize redis cache for the first time.
+- **Logging**: Errors are logged to the EFK stack for monitoring and analysis.
 
-Tables
+## Additional Enhancements
 
-Users
+- **Regional Leaderboards**: Shard leaderboards by region, e.g., `leaderboard:us`, `leaderboard:eu`.
 
-Column	Type	Description
-id	UUID	Primary key
-name	VARCHAR	User name
-email	VARCHAR	User email
+## Monitoring and Auditing
 
-Scores
-
-Column	Type	Description
-userId	UUID	Foreign key to Users
-score	INT	User’s total score
-
-11. Implementation Notes
-	•	Use Redis Sorted Sets (ZADD) for real-time leaderboard updates.
-	•	Enable Redis AOF for durability.
-	•	Implement background workers for batch database writes.
-
-12. Additional Enhancements
-	1.	Monitoring and Metrics:
-	•	Use Prometheus and Grafana to monitor API usage and system health.
-	2.	Scaling:
-	•	Deploy the system using Kubernetes for auto-scaling capabilities.
-	3.	Logging and Auditing:
-	•	Use ELK stack (Elasticsearch, Logstash, Kibana) for centralized logging and debugging.
-
-This detailed specification provides a robust foundation for developers to implement the module securely and efficiently. Let me know if you’d like further clarifications or changes!
+- **EFK Stack**: Use Elasticsearch, Fluentd, and Kibana for storing logs and providing insights into system performance and user activity.
