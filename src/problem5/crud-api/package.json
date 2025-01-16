@@ -4,7 +4,7 @@
   "description": "REST API with Node JS, TypeScript, Express and Prisma",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
+    "dev": "NODE_ENV=development nodemon src/index.ts",
     "predev": "kill -9 $(lsof -ti:3001) || exit 0",
     "test": "jest --coverage",
     "test:unit": "jest --coverage tests/unittest",
@@ -20,7 +20,7 @@
     "db:studio": "npx prisma studio",
     "prepare": "husky install",
     "build": "npx prisma generate && rimraf build && tsc -p tsconfig.json",
-    "start": "node build/src/index.js",
+    "start": "NODE_ENV=production node build/src/index.js",
     "swagger": "node src/swaggerAutogen.js"
   },
   "keywords": [
