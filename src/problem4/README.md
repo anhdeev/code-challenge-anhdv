@@ -329,7 +329,7 @@ function storeNonce(userId, nonce) {
 
 ## Error Handling
 
-- **Job Failures**: Use RabbitMQ Dead Letter Queues (DLQ) to handle failed jobs, with retries using exponential backoff.
+- **Job Failures**: Use RabbitMQ Dead Letter Queues (DLQ) to handle failed jobs, with job retries using exponential backoff.
 - **Redis/Database Failures**: If Redis is unavailable, fallback to database for leaderboard queries and initialize redis cache for the first time.
 
 ## Additional Enhancements
@@ -337,5 +337,6 @@ function storeNonce(userId, nonce) {
 - **Sharding for Scalability**: For handling a very large number of users or when the current infrastructure reaches its vertical scaling limits, users can be grouped by IP region. Each user group will have its own dedicated queue, database, and Redis instance to ensure efficient processing and prevent bottlenecks.
 - **Thoroughful logging**: Adding more log event using EFK stack like error, system health check, resource monitor, user behavior which is usedfull to monitor faulty or system.
 - **Load balancing**: if the request traffic to both HTTP API and WS API get reaches high peek with slow down or consume most of CPU/ memory resource, consider to scale multiple score-service and websocket service and place them behide a loadbalancing like NGINX or AWS Elastic Loadbalancer
+- **Distributed lock**: When multiple workers handle batch updates concurrently, they may attempt to update the same user’s record in the database simultaneously, leading to conflicts on the same row. This can be avoided by implementing a distributed locking mechanism using Redis-based locks or PostgreSQL’s advisory locks to ensure only one worker updates a specific record at a time.
 
   
