@@ -4,4 +4,4 @@
 - **Problem 4**: Three ways to sum to n
 - **Problem 6**: Architecture
 - **Problem 5**: A Crude Server
-  - **DEMO**: [Swagger API doc](http://45.77.243.25:3000/api/)
+  - **DEMO**: [Swagger API doc](http://45.77.243.25/api/)
